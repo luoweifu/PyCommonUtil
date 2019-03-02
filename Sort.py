@@ -33,6 +33,7 @@ def bubbleSort(arr):
         # print("(i:%d, j:%d) list:%s" % (i, j, newArr))
     return newArr
 
+
 def insertSort(arr):
     """插入排序"""
     newArr = copy.deepcopy(arr)
@@ -53,8 +54,43 @@ def insertSort(arr):
     return newArr
 
 
+# 2, 89, 34, 55, 34, 68, 49, 87, 62, 80
+def quickSort(arr, left, right):
+    """快速排序"""
+    if(left > right):
+        return arr
+
+    # 设置基准数和局部变量
+    base = arr[left]
+    i = left
+    j = right
+
+    while(i != j):
+        # 从右往左找一个比base小的数：d1
+        while(i != j and arr[j] >= base):
+            j -= 1
+        # 从左往右找一个比base大的数：d2
+        while(i != j and arr[i] <= base):
+            i += 1
+        # d1与d2互换位置
+        if(i < j):
+            tmp = arr[i]
+            arr[i] = arr[j]
+            arr[j] = tmp
+
+    # 此时 i == j，将此位置的值与base互换，将base归位置合适的位置
+    arr[left] = arr[i]
+    arr[i] = base
+    # 递归再次排序
+    quickSort(arr, left, i-1)
+    quickSort(arr, i+1, right)
+    return arr
+
+
+
+print(arr_sample)
 # arr_result = bubbleSort(arr_sample)
 # arr_result = selectSort(arr_sample)
-arr_result = insertSort(arr_sample)
-print(arr_sample)
+# arr_result = insertSort(arr_sample)
+arr_result = quickSort(arr_sample, 0, len(arr_sample)-1)
 print(arr_result)
