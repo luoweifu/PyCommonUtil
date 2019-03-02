@@ -56,7 +56,8 @@ def insertSort(arr):
 
 # 2, 89, 34, 55, 34, 68, 49, 87, 62, 80
 def quickSort(arr, left, right):
-    """快速排序"""
+    """快速排序
+    相关原理可参考：https://blog.csdn.net/adusts/article/details/80882649"""
     if(left > right):
         return arr
 
@@ -87,6 +88,10 @@ def quickSort(arr, left, right):
     return arr
 
 
+def heapSort(arr):
+    """堆排序
+    相关原理可参考：https://blog.csdn.net/u013384984/article/details/79496052"""
+    pass
 
 print(arr_sample)
 # arr_result = bubbleSort(arr_sample)
