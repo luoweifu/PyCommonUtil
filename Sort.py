@@ -116,7 +116,12 @@ def heap_sort(arr):
 
 
 def __build_tree(arr, last, end):
-    """构建一棵树"""
+    """
+    构建一棵(end+1)个元素的大顶堆树
+    :param arr 要排序的数组
+    :param last 最后一个非叶子结点的索引
+    :param end 最一个元素的索引
+    """
     # 从最后一个非叶子结点开始往上调整
     for i in range(last, -1, -1):
         __adjust_heap(arr, i, end)
