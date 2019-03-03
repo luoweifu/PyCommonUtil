@@ -6,7 +6,7 @@ import copy
 
 arr_sample = [2, 89, 34, 55, 34, 68, 49, 87, 62, 80]
 
-def selectSort(arr):
+def select_sort(arr):
     """选择排序"""
     newArr = copy.deepcopy(arr)
     for i in range(0, len(newArr)):
@@ -21,7 +21,7 @@ def selectSort(arr):
     return newArr
 
 
-def bubbleSort(arr):
+def bubble_sort(arr):
     """冒泡排序"""
     newArr = copy.deepcopy(arr)
     for i in range(0, len(newArr)):
@@ -34,7 +34,7 @@ def bubbleSort(arr):
     return newArr
 
 
-def insertSort(arr):
+def insert_sort(arr):
     """插入排序"""
     newArr = copy.deepcopy(arr)
     for i in range(1, len(newArr)):
@@ -55,8 +55,12 @@ def insertSort(arr):
 
 
 # 2, 89, 34, 55, 34, 68, 49, 87, 62, 80
-def quickSort(arr, left, right):
-    """快速排序
+def quick_sort(arr):
+    """快速排序"""
+    return __quick_sort(arr, 0, len(arr) - 1)
+
+def __quick_sort(arr, left, right):
+    """递归的快排算法
     相关原理可参考：https://blog.csdn.net/adusts/article/details/80882649"""
     if(left > right):
         return arr
@@ -83,19 +87,68 @@ def quickSort(arr, left, right):
     arr[left] = arr[i]
     arr[i] = base
     # 递归再次排序
-    quickSort(arr, left, i-1)
-    quickSort(arr, i+1, right)
+    __quick_sort(arr, left, i - 1)
+    __quick_sort(arr, i + 1, right)
     return arr
 
 
-def heapSort(arr):
+def swap(arr, i, j):
+    """调换数组中i, j两个元素的值"""
+    tmp = arr[i]
+    arr[i] = arr[j]
+    arr[j] = tmp
+
+
+def heap_sort(arr):
     """堆排序
     相关原理可参考：https://blog.csdn.net/u013384984/article/details/79496052"""
-    pass
+    # 从n个元素中查找最大的值放在索引n-1的位置，再从n-1个元素中查找最大的值放在索引n-2的位置，依此类推
+    for i in range(len(arr) - 1, 0, -1):
+        # i ：需要构建大顶堆树的最一个结点索引
+        # 最后一个非叶子结点的索引,"//"表示取整的意思
+        last = (i + 1) // 2 - 1
+        # 构建大顶堆，并取堆顶(根结点)元素作为i+1个结点中的最大值
+        __build_tree(arr, last, i)
+        # 将最大值放在i位置，(0, 1, .. i-2, i-1)又变成了一课无序的树
+        swap(arr, 0, i)
+        # print("查找索引%d的最大值：%s" % (i, arr))
+    return arr
+
+
+def __build_tree(arr, last, end):
+    """构建一棵树"""
+    # 从最后一个非叶子结点开始往上调整
+    for i in range(last, -1, -1):
+        __adjust_heap(arr, i, end)
+
+def __adjust_heap(arr, root, end):
+    """
+    调整堆，构建大顶堆
+    n个结点的完全二叉树按层序编号后(索引从0开始)，左孩子结点：left = 2*root + 1，右孩子结点：right = 2*root + 2
+    :param arr 数组
+    :param root 根结点索引
+    :param end 最大的索引
+    """
+    # 取左右结点中值较大的结点
+    max_idx = left = 2 * root + 1
+    if(2 * root + 2 <= end):
+        right = 2 * root + 2
+        max_idx = left if arr[left] > arr[right] else right
+    if(arr[max_idx] > arr[root]):
+        swap(arr, root, max_idx)
+        # max_idx 是否有孩子结点
+        max_child_idx = 2 * max_idx + 1
+        if(max_child_idx <= end):
+            __adjust_heap(arr, max_idx, end)
+
+
+# test
+# print(list(range(5, 0, -1)))
 
 print(arr_sample)
-# arr_result = bubbleSort(arr_sample)
-# arr_result = selectSort(arr_sample)
-# arr_result = insertSort(arr_sample)
-arr_result = quickSort(arr_sample, 0, len(arr_sample)-1)
+# arr_result = bubble_sort(arr_sample)
+# arr_result = select_sort(arr_sample)
+# arr_result = insert_sort(arr_sample)
+arr_result = quick_sort(arr_sample)
+# arr_result = heap_sort(arr_sample)
 print(arr_result)
