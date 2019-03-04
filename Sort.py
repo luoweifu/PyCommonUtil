@@ -144,13 +144,41 @@ def __adjust_heap(arr, root, end):
             __adjust_heap(arr, max_idx, end)
 
 
+def shell_sort(arr):
+    """希尔排序
+    相关原理可参考：https://blog.csdn.net/qq_39207948/article/details/80006224"""
+    STEP = len(arr) // 2 # 初始步距
+    while(STEP > 0):
+        for i in range(STEP, len(arr)):
+            __shell_insert_sort(arr, STEP, i)
+        STEP //=2    # 步距每次缩小2倍，直到等于1
+    return arr
+
+def __shell_insert_sort(arr, step, i):
+    """
+    希尔插入排序
+    :param arr 要排序的数组
+    :param step 每次前进的步距(增量)
+    :param i 第i次遍历
+    """
+    # 插入元素
+    tmp = arr[i]  # 要插入的元素
+    # 从后往前遍历，依次后移step位元素，直到找着插入的位置时，插入该元素
+    k = i - step
+    while (k >=0 and tmp < arr[k]):
+        arr[k + step] = arr[k]
+        k -= step
+    arr[k + step] = tmp
+
+
 # test
-# print(list(range(5, 0, -1)))
+#print(list(range(5, 10, 1)))
 
 print(arr_sample)
 # arr_result = bubble_sort(arr_sample)
 # arr_result = select_sort(arr_sample)
-arr_result = insert_sort(arr_sample)
+# arr_result = insert_sort(arr_sample)
 # arr_result = quick_sort(arr_sample)
 # arr_result = heap_sort(arr_sample)
+arr_result = shell_sort(arr_sample)
 print(arr_result)
