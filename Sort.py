@@ -35,21 +35,18 @@ def bubble_sort(arr):
 
 
 def insert_sort(arr):
-    """插入排序"""
+    """直接插入排序"""
     newArr = copy.deepcopy(arr)
     for i in range(1, len(newArr)):
-        insertIndex = -1
-        for j in range(0, i):
-            if newArr[i] < newArr[j] :
-                insertIndex = j
+        # 插入元素
+        tmp = newArr[i]  # 要插入的元素
+        for k in range(i-1, -1, -1):
+            # 从后往前遍历，依次后移一位元素，直到找着插入的位置时，插入该元素
+            if (tmp < newArr[k]):
+                newArr[k+1] = newArr[k]
+            else:
+                newArr[k+1] = tmp
                 break
-        if insertIndex > -1:
-            # 插入元素
-            tmp = newArr[i]
-            for k in range(i, insertIndex, -1):
-                # 从后往前遍历，后移一位元素
-                newArr[k] = newArr[k - 1]
-            newArr[insertIndex] = tmp
         # print("insertIndex: %d, i:%d list%s:" % (insertIndex, i, newArr))
     return newArr
 
@@ -153,7 +150,7 @@ def __adjust_heap(arr, root, end):
 print(arr_sample)
 # arr_result = bubble_sort(arr_sample)
 # arr_result = select_sort(arr_sample)
-# arr_result = insert_sort(arr_sample)
-arr_result = quick_sort(arr_sample)
+arr_result = insert_sort(arr_sample)
+# arr_result = quick_sort(arr_sample)
 # arr_result = heap_sort(arr_sample)
 print(arr_result)
