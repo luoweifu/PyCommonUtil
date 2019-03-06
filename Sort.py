@@ -4,8 +4,6 @@
 
 import copy
 
-arr_sample = [2, 89, 34, 55, 34, 68, 49, 87, 62, 80]
-
 def select_sort(arr):
     """选择排序"""
     newArr = copy.deepcopy(arr)
@@ -171,14 +169,67 @@ def __shell_insert_sort(arr, step, i):
     arr[k + step] = tmp
 
 
+def merge_sort(arr):
+    """归并排序
+    相关原理可参考：https://blog.csdn.net/k_koris/article/details/80508543"""
+    return __merge_sort(arr, 0, len(arr) - 1)
+
+
+def __merge(arr, left, right, mid):
+    ""
+    # 将数组拷贝一个副本，原数组各元素的位置将被归并调整
+    newArr = copy.deepcopy(arr)
+
+    # 取中间位置的索引
+    # mid = (right - left) // 2
+    i = left        # 第一个数组的起始位置
+    j = mid + 1     # 第二个数组的起始位置
+    tmp = left      # 归并数组的起始位置
+    while(i <= mid and j <= right):
+        if(newArr[i] < newArr[j]):
+            arr[tmp] = newArr[i]
+            i += 1
+        else:
+            arr[tmp] = newArr[j]
+            j += 1
+        tmp += 1
+
+    # 可能剩余第1组的最后一个元素
+    if(tmp<= right and i <= right):
+        arr[tmp] = newArr[i]
+    # 可能剩余第2组的最后一个元素
+    if(tmp<= right and j <= right):
+        arr[tmp] = newArr[j]
+
+
+def __merge_sort(arr, left, right):
+    """
+    先进行分组，分组之后再进行归并，归并过程就是对两已经有序的组合成一个新的组(有序)
+    :param arr 要排序的组
+    :param left 最左边元素索引
+    :param right 最右边元素索引
+    """
+    if(left >= right ):
+        return arr
+
+    mid = (right + left) // 2
+    __merge_sort(arr, left, mid)
+    __merge_sort(arr, mid + 1, right)
+    __merge(arr, left, right, mid)
+
+    return arr
+
+
 # test
 #print(list(range(5, 10, 1)))
 
+arr_sample = [2, 89, 34, 55, 34, 68, 49, 87, 62, 80]
 print(arr_sample)
 # arr_result = bubble_sort(arr_sample)
 # arr_result = select_sort(arr_sample)
 # arr_result = insert_sort(arr_sample)
 # arr_result = quick_sort(arr_sample)
 # arr_result = heap_sort(arr_sample)
-arr_result = shell_sort(arr_sample)
+# arr_result = shell_sort(arr_sample)
+arr_result = merge_sort(arr_sample)
 print(arr_result)
