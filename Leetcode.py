@@ -168,16 +168,57 @@ class Solution(object):
         return generateTrees(1, n) if n else []
 
 
-        def BSTNum(start, end):
-            if start > end:
-                return 0
-            elif start == end:
-                return 1
+        # def BSTNum(start, end):
+        #     if start > end:
+        #         return 0
+        #     elif start == end:
+        #         return 1
+        #     else:
+        #         for i in range(start, end + 1):
+        #             leftTrees = BSTNum(start, i-1)
+        #             rightTrees = BSTNum(i + 1, end)
+        #             leftTrees + rightTrees + 1
+
+    def maxSubArray(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        if len(nums) <= 0:
+            return 0
+        dp = [nums[0]]
+        for i in range(1, len(nums)):
+            dp.append(0)
+        max = nums[0]
+        for i in range(1, len(nums)):
+            dp[i] = dp[i-1] + nums[i] if dp[i-1] > 0 else nums[i]
+            max = max if max > dp[i] else dp[i]
+        return max
+
+    def maxSubArray2(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        if len(nums) <= 0:
+            return [[], 0]
+
+        dp = [nums[0]]
+        for i in range(1, len(nums)):
+            dp.append(0)
+
+        start = end = 0
+        max = nums[0]
+        for i in range(1, len(nums)):
+            if dp[i - 1] > 0:
+                dp[i] = dp[i-1] + nums[i]
             else:
-                for i in range(start, end + 1):
-                    leftTrees = BSTNum(start, i-1)
-                    rightTrees = BSTNum(i + 1, end)
-                    leftTrees + rightTrees + 1
+                dp[i] = nums[i]
+                start = i
+            if max < dp[i]:
+                max = dp[i]
+                end = i
+        return [nums[start : end+1], max]
 
 def testAddTwoNums():
     l1 = p = ListNode(2)
@@ -244,10 +285,137 @@ def testUniqueBST():
     # print(obj.preTraversal(tree))
 
 
+class Node:
+    def __init__(self, val):
+        self.val = val
+        self.pre = None
+        self.next = None
+
+class LinkedList:
+    def __init__(self):
+        self.__head = None
+        self.__tail = None
+        self.__size = 0
+
+    def getFirst(self):
+        return self.__head
+
+    def getSize(self):
+        return self.__size
+
+    def deleteFirt(self):
+        val = 1
+        if self.__head is not None:
+            val = self.__head.val
+            self.__head = self.__head.next
+            self.__size -= 1
+        return val
+
+    def delete(self, node):
+        if self.__head == node:
+            self.__head = node.next
+        elif self.__tail == node:
+            self.__tail = node.pre
+        else:
+            node.pre.next = node.next
+            node.next.pre = node.pre
+        self.__size -= 1
+
+    def pushBack(self, node):
+        # node = Node(val)
+        if self.__size == 0:
+            self.__head = self.__tail = node
+        else:
+            self.__tail.next = node
+            node.pre = self.__tail
+            self.__tail = node
+        self.__size += 1
+
+    def printLink(self):
+        pt = self.__head
+        while pt is not None:
+            print(pt.val)
+            pt = pt.next
+
+
+class LRUCache(object):
+    def __init__(self, capacity):
+        """
+        :type capacity: int
+        """
+        self.__data = {}
+        self.__capacity = capacity
+        self.__list = LinkedList()
+
+    def get(self, key):
+        """
+        :type key: int
+        :rtype: int
+        """
+        if key in self.__data :
+            node = self.__data.get(key, -1)
+            self.__list.delete(node)
+            self.__list.pushBack(node)
+            return node.val
+        else:
+            return -1
+
+    def put(self, key, value):
+        """
+        :type key: int
+        :type value: int
+        :rtype: None
+        """
+        node = Node(value)
+        if self.__list.getSize() >= self.__capacity :
+            val = self.__list.deleteFirt()
+            del self.__data[val]
+        self.__data[key] = node
+        self.__list.pushBack(node)
+
+
+def testLRU():
+    # listObj = LinkedList()
+    # listObj.pushBack(Node(1))
+    # listObj.pushBack(Node(3))
+    # listObj.pushBack(Node(5))
+    # listObj.pushBack(Node(7))
+    # listObj.delete(listObj.getFirst().next)
+    # listObj.deleteFirt()
+    # listObj.printLink()
+    lru = LRUCache(2)
+    lru.put(1, 1)
+    lru.put(2, 2)
+    print(lru.get(1))
+    lru.put(3, 3)
+    print(lru.get(2))
+    lru.put(4, 4)
+    print(lru.get(1))
+    print(lru.get(3))
+    print(lru.get(4))
+
+
+def test():
+    l = []
+    for i in range(0, 10):
+        l.append(i)
+    print(l)
+    print(l[2:5])
+
+def testMaxSubArray():
+    nums = [-2,1,-3,4,-1,2,1,-5,4]
+    obj = Solution()
+    result, sum = obj.maxSubArray2(nums)
+    print(result)
+    print(sum)
+
 # testAddTwoNums()
 # testLogetstSubStr()
 # print(len("Hello"))
 # print('n' in "hello")
 # testIsSameTree()
 # testInnorderTravel()
-testUniqueBST()
+# testUniqueBST()
+# testLRU()
+testMaxSubArray()
+# test()
