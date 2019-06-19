@@ -220,6 +220,143 @@ class Solution(object):
                 end = i
         return [nums[start : end+1], max]
 
+    def climbStairs(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        if n == 1 :
+            return 1
+        if n == 2:
+            return 2
+        n1 = 1
+        n2 = 2
+        for i in range(3, n + 1):
+            tmp = n1 + n2
+            n1 = n2
+            n2 = tmp
+        return n2
+
+    def maxProfit(self, prices):
+        """
+        :type prices: List[int]
+        :rtype: int
+        """
+        if len(prices) <= 0:
+            return 0
+        minPrice = prices[0]
+        maxProfit = 0
+        for i in range(1, len(prices)):
+            if minPrice > prices[i]:
+                minPrice = prices[i]
+            elif prices[i] - minPrice > maxProfit:
+                maxProfit = prices[i] - minPrice
+        return maxProfit
+
+    def rob(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        if len(nums) <= 0 :
+            return 0
+        if len(nums) == 1:
+            return nums[0]
+        if len(nums) == 2:
+            return max(nums[0], nums[1])
+
+        m1 = nums[0]
+        m2 = max(nums[0], nums[1])
+        for i in range(2, len(nums)):
+            tmp = max(m2, m1 + nums[i])
+            m1 = m2
+            m2 = tmp
+        return m2
+
+    def minCostClimbingStairs(self, cost):
+        """
+        :type cost: List[int]
+        :rtype: int
+        """
+        if len(cost) <= 0:
+            return 0
+        if len(cost) == 1:
+            return cost[0]
+        if len(cost) == 2:
+            return min(cost[0], cost[1])
+
+        dp = [cost[0], min(cost[0], cost[1])]
+        for i in range(2, len(cost)-1):
+            dp.append(min(dp[i-1] + cost[i], dp[i-2] + cost[i]))
+        dp.append(min(dp[len(cost) - 2], dp[len(cost) - 3] + cost[len(cost)-1]))
+        return dp[len(cost) - 1]
+
+    def divisorGame(self, N):
+        """
+        :type N: int
+        :rtype: bool
+        """
+        return not (N & 0x01) # is even number (N & 0x01 is a odd number)
+
+    def countBits(self, num):
+        """
+        :type num: int
+        :rtype: List[int]
+        """
+        if num == 0:
+            return [0]
+
+        dp = [0]
+        for i in range(1, num + 1):
+            dp.append(dp[i >> 1] + (i & 1))
+        return dp
+
+    def minFallingPathSum(self, A):
+        """
+        :type A: List[List[int]]
+        :rtype: int
+        Let dp(r, c) be the minimum total weight of a falling path starting at (r, c) and reaching the bottom row.
+        Then, dp(r, c) = A[r][c] + min(dp(r+1, c-1), dp(r+1, c), dp(r+1, c+1)), and the answer is min dp(0,c).
+        """
+        rowNum = len(A)
+        colNum = len(A[0])
+        for r in range(rowNum - 2, -1, -1):
+            for c in range(0, colNum):
+                minWeight = A[r+1][c]
+                if(c > 0):
+                    minWeight = min(minWeight, A[r+1][c-1])
+                if(c < colNum-1):
+                    minWeight = min(minWeight, A[r + 1][c + 1])
+                A[r][c] += minWeight
+                # print(A[r][c], end="\t")
+            # print()
+        return min(A[0])
+
+
+class NumArray(object):
+    def __init__(self, nums):
+        """
+        :type nums: List[int]
+        """
+        self.__sums =  [0]
+        curSum = 0
+        for n in nums:
+            curSum += n
+            self.__sums.append(curSum)
+
+    def sumRange(self, i, j):
+        """
+        :type i: int
+        :type j: int
+        :rtype: int
+        """
+        return self.__sums[j+1] - self.__sums[i] # sums[j+1] - sums[i+1 - 1]
+
+
+# Your NumArray object will be instantiated and called as such:
+# obj = NumArray(nums)
+# param_1 = obj.sumRange(i,j)
+
 def testAddTwoNums():
     l1 = p = ListNode(2)
     p.next = ListNode(4)
@@ -396,11 +533,17 @@ def testLRU():
 
 
 def test():
-    l = []
-    for i in range(0, 10):
-        l.append(i)
+    l = [1,2,3,4,5]
     print(l)
-    print(l[2:5])
+    l2 = list(reversed(l))
+    print(l2)
+    for i in range(4, -1, -1):
+        print(i)
+    dp = [False for i in range(6)]
+    print(dp)
+    l2 = [i for i in range(4)]
+    print(l2)
+
 
 def testMaxSubArray():
     nums = [-2,1,-3,4,-1,2,1,-5,4]
@@ -408,6 +551,56 @@ def testMaxSubArray():
     result, sum = obj.maxSubArray2(nums)
     print(result)
     print(sum)
+
+def testClimbStairs():
+    obj = Solution()
+    result = obj.climbStairs(3)
+    print(result)
+
+def testRob():
+    obj = Solution()
+    # nums = [1,2,3,1]
+    nums = [2,7,9,3,1]
+    result = obj.rob(nums)
+    print(result)
+
+def testMinCostClimbingStairs():
+    obj = Solution()
+    # cost = [10, 15, 20]
+    # cost = [1, 100, 1, 1, 1, 100, 1, 1, 100, 1]
+    # cost = [0,0,0,1]
+    cost = [0,1,1,0]
+    result = obj.minCostClimbingStairs(cost)
+    print(result)
+
+def testRangeSum():
+    nums = [-2, 0, 3, -5, 2, -1]
+    arr = NumArray(nums)
+    print(arr.sumRange(0, 2))
+    print(arr.sumRange(2, 5))
+    print(arr.sumRange(0, 5))
+
+def testDivisorGame():
+    obj = Solution()
+    print(obj.divisorGame(1))
+    print(obj.divisorGame(2))
+    print(obj.divisorGame(3))
+
+def testCountBits():
+    obj = Solution()
+    print(obj.countBits(2))
+    print(obj.countBits(5))
+
+
+def testMinFallingPathSum():
+    A = [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9],
+    ]
+    obj = Solution()
+    print(obj.minFallingPathSum(A))
+    print(A)
 
 # testAddTwoNums()
 # testLogetstSubStr()
@@ -417,5 +610,12 @@ def testMaxSubArray():
 # testInnorderTravel()
 # testUniqueBST()
 # testLRU()
-testMaxSubArray()
+# testMaxSubArray()
+# testClimbStairs()
+# testRob()
+# testMinCostClimbingStairs()
+# testRangeSum()
+# testDivisorGame()
+# testCountBits()
+testMinFallingPathSum()
 # test()
